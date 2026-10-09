@@ -1,0 +1,27 @@
+name: Databricks CI/CD
+concurrency: 1
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'dlt_bundle_dev/**'
+
+jobs:
+  deploy:
+    name: 'Deploy bundle'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - run: databricks bundle deploy
+        working-directory: dlt_bundle_dev
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: prod
+
